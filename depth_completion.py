@@ -10,6 +10,7 @@ import png
 from ip_basic import depth_map_utils
 from ip_basic import vis_utils
 
+PATH = os.path.abspath(os.path.dirname(__file__))
 
 def main():
     """Depth maps are saved to the 'outputs' folder.
@@ -18,15 +19,9 @@ def main():
     ##############################
     # Options
     ##############################
-    # Validation set
-    input_depth_dir = os.path.expanduser(
-        '~/Kitti/depth/val_selection_cropped/velodyne_raw')
-    data_split = 'val'
-
-    # Test set
-    # input_depth_dir = os.path.expanduser(
-    #     '~/Kitti/depth/test_depth_completion_anonymous/velodyne_raw')
-    # data_split = 'test'
+    # Citiscapes dataset test
+    input_depth_dir = os.path.join(PATH, "test_data", "berlin_depth")
+    data_split = 'test'
 
     # Fast fill with Gaussian blur @90Hz (paper result)
     fill_type = 'fast'
@@ -62,8 +57,7 @@ def main():
         save_depth_maps = False
 
     # Create output folder
-    this_file_path = os.path.dirname(os.path.realpath(__file__))
-    outputs_dir = this_file_path + '/outputs'
+    outputs_dir = PATH + '/outputs'
     os.makedirs(outputs_dir, exist_ok=True)
 
     output_folder_prefix = 'depth_' + data_split
@@ -124,6 +118,7 @@ def main():
         # Fill in
         start_fill_time = time.time()
         if fill_type == 'fast':
+            print("running")
             final_depths = depth_map_utils.fill_in_fast(
                 projected_depths, extrapolate=extrapolate, blur_type=blur_type)
         elif fill_type == 'multiscale':
